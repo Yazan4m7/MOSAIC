@@ -90,7 +90,7 @@ class DataTableDemoState extends State<DataTableDemo> {
         _employees = employees;
       });
       _showProgress(widget.title); // Reset the title...
-      print("Length ${_employees.length}");
+      print("Length ${employees.length}");
     });
   }
 

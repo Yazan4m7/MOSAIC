@@ -29,20 +29,31 @@ class Services {
     }
   }
 
+  /*static List myGetEmployees() {
+    var map = Map<String, dynamic>();
+    map['action'] = _GET_ALL_ACTION;
+    String data;
+    http.post(ROOT, body: map)
+        .then((response) => data = response.body)
+        .catchError((error) => print(error));
+    print("my get employees : $data");
+    return parseResponse(data);
+  }*/
+
   static Future<List<Employee>> getEmployees() async {
     try {
       var map = Map<String, dynamic>();
       map['action'] = _GET_ALL_ACTION;
       final response = await http.post(ROOT, body: map);
       print('getEmployees Response: ${response.body}');
-      if (200 == response.statusCode) {
+
         List<Employee> list = parseResponse(response.body);
+        print("list after parsing:" + list.length.toString());
         return list;
-      } else {
-        return List<Employee>();
+
       }
-    } catch (e) {
-      return List<Employee>(); // return an empty list on exception/error
+     catch (e) {
+      print(e); // return an empty list on exception/error
     }
   }
 
