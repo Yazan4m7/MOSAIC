@@ -3,7 +3,11 @@ import 'Employee.dart';
 import 'Services.dart';
 
 
-void main() => runApp(MyApp());
+void main() {
+
+  runApp(MyApp());
+
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -83,9 +87,9 @@ class DataTableDemoState extends State<DataTableDemo> {
     });
   }
 
-  _getEmployees() {
+  _getEmployees() async {
     _showProgress('Loading Employees...');
-    Services.getEmployees().then((employees) {
+    await Services.getEmployees().then((employees) {
       setState(() {
         _employees = employees;
       });

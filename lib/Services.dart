@@ -41,27 +41,25 @@ class Services {
   }*/
 
   static Future<List<Employee>> getEmployees() async {
-    try {
+
       var map = Map<String, dynamic>();
       map['action'] = _GET_ALL_ACTION;
       final response = await http.post(ROOT, body: map);
       print('getEmployees Response: ${response.body}');
 
         List<Employee> list = parseResponse(response.body);
-        print("list after parsing:" + list.length.toString());
+//        print(list);
         return list;
 
-      }
-     catch (e) {
-      print(e); // return an empty list on exception/error
-    }
+
+
   }
 
   static List<Employee> parseResponse(String responseBody) {
 
-    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
-    print (parsed);
-    return parsed.map<Employee>((json) => Employee.fromJson(json)).toList();
+    var parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+    parsed = parsed.map<Employee>((json) => Employee.fromJson(json)).toList();
+    return parsed;
   }
 
   // Method to add employee to the database...
