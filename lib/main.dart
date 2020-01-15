@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Employee.dart';
 import 'Services.dart';
-
+import 'Task.dart';
 
 void main() {
 
@@ -29,7 +29,7 @@ class DataTableDemo extends StatefulWidget {
 }
 
 class DataTableDemoState extends State<DataTableDemo> {
-  List<Employee> _employees;
+  List<Task> _employees;
 
   // controller for the First Name TextField we are going to create.
   TextEditingController _firstNameController;
@@ -59,45 +59,45 @@ class DataTableDemoState extends State<DataTableDemo> {
   }
 
 
+//  _createTable() {
+//    _showProgress('Creating Table...');
+//    Services.createTable().then((result) {
+//      if ('success' == result) {
+//        // Table is created successfully.
+//
+//        _showProgress(widget.title);
+//      }
+//    });
+//  }
 
-  _createTable() {
-    _showProgress('Creating Table...');
-    Services.createTable().then((result) {
-      if ('success' == result) {
-        // Table is created successfully.
-
-        _showProgress(widget.title);
-      }
-    });
-  }
 
   // Now lets add an Employee
-  _addEmployee() {
-    if (_firstNameController.text.isEmpty || _lastNameController.text.isEmpty) {
-      print('Empty Fields');
-      return;
-    }
-    _showProgress('Adding Employee...');
-    Services.addEmployee(_firstNameController.text, _lastNameController.text)
-        .then((result) {
-      if ('success' == result) {
-        _getEmployees(); // Refresh the List after adding each employee...
-        _clearValues();
-      }
-    });
-  }
+//  _addEmployee() {
+//    if (_firstNameController.text.isEmpty || _lastNameController.text.isEmpty) {
+//      print('Empty Fields');
+//      return;
+//    }
+//    _showProgress('Adding Employee...');
+//    Services.addEmployee(_firstNameController.text, _lastNameController.text)
+//        .then((result) {
+//      if ('success' == result) {
+//        _getEmployees(); // Refresh the List after adding each employee...
+//        _clearValues();
+//      }
+//    });
+//  }
 
   _getEmployees() async {
     _showProgress('Loading Employees...');
-    await Services.getEmployees().then((employees) {
+    await Services.getEmployees().then((tasks) {
       setState(() {
-        _employees = employees;
+        _employees = tasks;
       });
       _showProgress(widget.title); // Reset the title...
-      print("Length ${employees.length}");
+      print("Length ${tasks.length}");
     });
   }
-
+/*
   _updateEmployee(Employee employee) {
     setState(() {
       _isUpdating = true;
@@ -124,7 +124,7 @@ class DataTableDemoState extends State<DataTableDemo> {
       }
     });
   }
-
+*/
   // Method to clear TextField values
   _clearValues() {
     _firstNameController.text = '';
@@ -157,20 +157,20 @@ class DataTableDemoState extends State<DataTableDemo> {
             ),
             // Lets add one more column to show a delete button
             DataColumn(
-              label: Text('DELETE'),
+              label: Text('Assign to me'),
             )
           ],
           rows: _employees
               .map(
-                (employee) => DataRow(cells: [
+                (task) => DataRow(cells: [
               DataCell(
-                Text(employee.id.toString()),
+                Text(task.id.toString()),
                 // Add tap in the row and populate the
                 // textfields with the corresponding values to update
                 onTap: () {
-                  _showValues(employee);
+                 // _showValues(task);
                   // Set the Selected employee to Update
-                  _selectedEmployee = employee;
+                  //_selectedEmployee = task;
                   setState(() {
                     _isUpdating = true;
                   });
@@ -178,12 +178,12 @@ class DataTableDemoState extends State<DataTableDemo> {
               ),
               DataCell(
                 Text(
-                  employee.firstName.toUpperCase(),
+                  task.patient_name.toUpperCase(),
                 ),
                 onTap: () {
-                  _showValues(employee);
+                  //_showValues(task);
                   // Set the Selected employee to Update
-                  _selectedEmployee = employee;
+                  //_selectedEmployee = task;
                   // Set flag updating to true to indicate in Update Mode
                   setState(() {
                     _isUpdating = true;
@@ -192,21 +192,21 @@ class DataTableDemoState extends State<DataTableDemo> {
               ),
               DataCell(
                 Text(
-                  employee.lastName.toUpperCase(),
+                  task.current_status,
                 ),
                 onTap: () {
-                  _showValues(employee);
+                 // _showValues(task);
                   // Set the Selected employee to Update
-                  _selectedEmployee = employee;
+                 // _selectedEmployee = task;
                   setState(() {
                     _isUpdating = true;
                   });
                 },
               ),
               DataCell(IconButton(
-                icon: Icon(Icons.delete),
+                icon: Icon(Icons.slideshow),
                 onPressed: () {
-                  _deleteEmployee(employee);
+                  //_deleteEmployee(employee);
                 },
               ))
             ]),
@@ -228,7 +228,7 @@ class DataTableDemoState extends State<DataTableDemo> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              _createTable();
+             // _createTable();
             },
           ),
           IconButton(
@@ -269,7 +269,7 @@ class DataTableDemoState extends State<DataTableDemo> {
                 OutlineButton(
                   child: Text('UPDATE'),
                   onPressed: () {
-                    _updateEmployee(_selectedEmployee);
+                   // _updateEmployee(_selectedEmployee);
                   },
                 ),
                 OutlineButton(
@@ -292,7 +292,7 @@ class DataTableDemoState extends State<DataTableDemo> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _addEmployee();
+        //  _addEmployee();
         },
         child: Icon(Icons.add),
       ),
