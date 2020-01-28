@@ -1,15 +1,20 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart'
 as http;
-import 'Task.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import '../models/Task.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../views/main_ui.dart';
 
 class Services {
-  static const ROOT = 'http://10.0.2.2/server_services.php';
+  static const ROOT = 'http://10.0.2.2/services_actions.php';
   static const _CREATE_TABLE_ACTION = 'CREATE_TABLE';
   static const _GET_ALL_ACTION = 'GET_ALL';
   static const _ADD_EMP_ACTION = 'ADD_EMP';
   static const _UPDATE_EMP_ACTION = 'UPDATE_EMP';
   static const _DELETE_EMP_ACTION = 'DELETE_EMP';
+  static const _LOGIN = 'LOGIN';
 
   // Method to create the table Employees.
 //  static Future<String> createTable() async {
@@ -48,7 +53,7 @@ class Services {
       print('getEmployees Tasks: ${response.body}');
 
         List<Task> list = parseResponse(response.body);
-//        print(list);
+        print(list);
         return list;
   }
 
@@ -58,24 +63,32 @@ class Services {
     parsed = parsed.map<Task>((json) => Task.fromJson(json)).toList();
     return parsed;
   }
-
-  static String logIn(String username, String password){
-    var map = Map<String, dynamic>();
-    map['action']="LOGIN";
-    map['username'] = username;
-    map['password'] = password;
-    final response = http.post(ROOT, body: map);
-    //if (response.statusCode )
-
-  }
-
   static AssignTask(int caseID, String userName, String stage) async{
     var map = Map<String, dynamic>();
-    map['action'] = "ASSIGN_TASK";
+    map['action'] = "UPDATE_task_to_active";
+
 
 
   }
+  static Future<bool> logIn(String username,String password,BuildContext context) async{
 
+    var map = Map<String, dynamic>();
+    map['action'] = _LOGIN;
+    map['username'] = username;
+    map['password'] = password;
+    final response =await http.post(ROOT, body: map);
+    print('Login Response: ${response.body}');
+    if (response.body.isNotEmpty){
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString("user_name",jsonDecode(response.body)[0]['username']);
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => main_ui()));
+      return true;
+    }
+    Alert(context: context, title: "Oops", desc: "Invalid username/password").show();
+    return false;
+  }
 
 //  // Method to add employee to the database...
 //  static Future<String> addEmployee(String firstName, String lastName) async {

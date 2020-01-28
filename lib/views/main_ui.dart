@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'Employee.dart';
-import 'Services.dart';
-import 'Task.dart';
-
+import '../models/Employee.dart';
+import '../business/Services.dart';
+import '../models/Task.dart';
+import '../CustomDataTable.dart';
 void main() {
 
   runApp(MyApp());
@@ -14,21 +14,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return new MaterialApp(
-      home: new DataTableDemo(),
+      home: new main_ui(),
     );
   }
 }
-class DataTableDemo extends StatefulWidget {
+class main_ui extends StatefulWidget {
   //
-  DataTableDemo() : super();
+  main_ui() : super();
 
   final String title = 'Flutter Data Table';
 
   @override
-  DataTableDemoState createState() => DataTableDemoState();
+  main_uiState createState() => main_uiState();
 }
 
-class DataTableDemoState extends State<DataTableDemo> {
+class main_uiState extends State<main_ui> {
   List<Task> _employees;
 
   // controller for the First Name TextField we are going to create.
@@ -144,27 +144,34 @@ class DataTableDemoState extends State<DataTableDemo> {
       scrollDirection: Axis.vertical,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: DataTable(
-          columns: [
-            DataColumn(
-              label: Text('ID'),
-            ),
-            DataColumn(
-              label: Text('FIRST NAME'),
-            ),
-            DataColumn(
-              label: Text('LAST NAME'),
-            ),
-            // Lets add one more column to show a delete button
-            DataColumn(
+        child: CustomDataTable(
+              columns: [
+                CustomDataColumn(
+                  label: Text('Patient Name'),
+                ),
+                CustomDataColumn(
+                  label: Text('Doctor name'),
+                ),
+                CustomDataColumn(
+                  label: Text('Phase'),
+                ),
+                // Lets add one more column to show a delete button
+                CustomDataColumn(
               label: Text('Assign to me'),
             )
           ],
           rows: _employees
               .map(
-                (task) => DataRow(cells: [
-              DataCell(
-                Text(task.id.toString()),
+                (task) => CustomDataRow(cells: [
+                  CustomDataCell(
+                Column(
+                  children: <Widget>[
+                    Text(task.patient_name),
+                    FlatButton(
+                      child: Text('Assig to me'),),
+
+                  ],
+                ),
                 // Add tap in the row and populate the
                 // textfields with the corresponding values to update
                 onTap: () {
@@ -176,23 +183,18 @@ class DataTableDemoState extends State<DataTableDemo> {
                   });
                 },
               ),
-              DataCell(
-                Text(
-                  task.patient_name.toUpperCase(),
-                ),
-                onTap: () {
-                  //_showValues(task);
-                  // Set the Selected employee to Update
-                  //_selectedEmployee = task;
-                  // Set flag updating to true to indicate in Update Mode
-                  setState(() {
-                    _isUpdating = true;
-                  });
-                },
+                  CustomDataCell(
+                Column(children: <Widget>[
+                  Text(
+                    task.doctor_id.toString(),
+                  ),
+                  FlatButton(
+                  child: Text('View'),),
+                ],)
               ),
-              DataCell(
+                  CustomDataCell(
                 Text(
-                  task.current_status,
+                  task.stage,
                 ),
                 onTap: () {
                  // _showValues(task);
@@ -203,7 +205,7 @@ class DataTableDemoState extends State<DataTableDemo> {
                   });
                 },
               ),
-              DataCell(IconButton(
+                  CustomDataCell(IconButton(
                 icon: Icon(Icons.slideshow),
                 onPressed: () {
                   //_deleteEmployee(employee);
@@ -243,47 +245,7 @@ class DataTableDemoState extends State<DataTableDemo> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(20.0),
-              child: TextField(
-                controller: _firstNameController,
-                decoration: InputDecoration.collapsed(
-                  hintText: 'First Name',
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(20.0),
-              child: TextField(
-                controller: _lastNameController,
-                decoration: InputDecoration.collapsed(
-                  hintText: 'Last Name',
-                ),
-              ),
-            ),
-            // Add an update button and a Cancel Button
-            // show these buttons only when updating an employee
-            _isUpdating
-                ? Row(
-              children: <Widget>[
-                OutlineButton(
-                  child: Text('UPDATE'),
-                  onPressed: () {
-                   // _updateEmployee(_selectedEmployee);
-                  },
-                ),
-                OutlineButton(
-                  child: Text('CANCEL'),
-                  onPressed: () {
-                    setState(() {
-                      _isUpdating = false;
-                    });
-                    _clearValues();
-                  },
-                ),
-              ],
-            )
-                : Container(),
+          Container(child: SizedBox(height: 20,),),
             Expanded(
               child: _dataBody(),
             ),
