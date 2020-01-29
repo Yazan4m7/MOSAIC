@@ -3,17 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/FormCard.dart';
 import '../business/Services.dart';
 
-void main() => runApp(MaterialApp(
-  home: MyApp(),
-  debugShowCheckedModeBanner: false,
-));
-
-class MyApp extends StatefulWidget {
+class LoginUI extends StatefulWidget {
   @override
-  _MyAppState createState() => new _MyAppState();
+  _LoginUIState createState() => new _LoginUIState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _LoginUIState extends State<LoginUI> {
   bool _isSelected = false;
 
   final _usernameController = TextEditingController();
@@ -80,23 +75,18 @@ class _MyAppState extends State<MyApp> {
               padding: EdgeInsets.only(left: 28.0, right: 28.0, top: 60.0),
               child: Column(
                 children: <Widget>[
-                  Row(
+                  Column(
                     children: <Widget>[
-//                      Image.asset(
-//                        "assets/logo.png",
-//                        width: ScreenUtil.getInstance().setWidth(110),
-//                        height: ScreenUtil.getInstance().setHeight(110),
-//                      ),
-                      Text("LOGO",
-                          style: TextStyle(
-                              fontFamily: "Poppins-Bold",
-                              fontSize: ScreenUtil.getInstance().setSp(46),
-                              letterSpacing: .6,
-                              fontWeight: FontWeight.bold))
+                      Image.asset(
+                       "assets/logo.png",
+                       width: ScreenUtil.getInstance().setWidth(300),
+                        height: ScreenUtil.getInstance().setHeight(300),
+                      ),
+
                     ],
                   ),
                   SizedBox(
-                    height: ScreenUtil.getInstance().setHeight(180),
+                    height: ScreenUtil.getInstance().setHeight(100),
                   ),
             Container(
               width: double.infinity,
@@ -212,7 +202,7 @@ class _MyAppState extends State<MyApp> {
                             color: Colors.transparent,
                             child: InkWell(
                               onTap: () {
-                                 Services.logIn(_usernameController.text,_passwordController.text,context);},
+                                 Services.logIn(_usernameController.text.trim(),_passwordController.text.trim(),context);},
                               child: Center(
                                 child: Text("SIGNIN",
                                     style: TextStyle(
