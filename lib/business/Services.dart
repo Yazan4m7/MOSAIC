@@ -1,23 +1,23 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart'
-as http;
+import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import '../models/Task.dart';
+import '../models/Case.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../views/mainUI.dart';
+import '../views/CasesUi.dart';
+import 'WriteToFile.dart';
 
 class Services {
   static const ROOT = 'http://manshore.com/services_actions.php';
-  static const _CREATE_TABLE_ACTION = 'CREATE_TABLE';
   static const _GET_ALL_ACTION = 'GET_ALL';
-  static const _ADD_EMP_ACTION = 'ADD_EMP';
-  static const _UPDATE_EMP_ACTION = 'UPDATE_EMP';
-  static const _DELETE_EMP_ACTION = 'DELETE_EMP';
   static const _LOGIN = 'LOGIN';
+  static List<String> lines=List();
+  OutputEvent oe=OutputEvent(Level.debug, lines);
+  static LogOutput lo = WriteToFile();
+  static Logger logger = Logger(output: lo);
 
-
-  static Future<List<Task>> getTasks() async {
+  static Future<List<Task>> getCases() async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String permissions = "(" + prefs.get('permissions_ids') +")";
       var map = Map<String, dynamic>();
@@ -62,6 +62,7 @@ class Services {
     print('Assign task reponse body: ${response.body}');
 
   }
+
   static updateToDone(int caseID, String currentStatus) async{
 
     String query = "UPDATE tasks SET current_status ='${int.parse(currentStatus)+1}' , stage='waiting' WHERE id = $caseID";
@@ -82,78 +83,25 @@ class Services {
     map['username'] = username;
     map['password'] = password;
     final response =await http.post(ROOT, body: map);
-    print('Login Response: ${response.body}');
+    logger.i(map.toString());
     if (response.body.isNotEmpty){
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       prefs.setString("user_name",jsonDecode(response.body)[0]['username']);
       prefs.setString("name",jsonDecode(response.body)[0]['name']);
       prefs.setString("permissions_ids",jsonDecode(response.body)[0]['permissions_ids']);
-
+      logger.i('Prefs set successfuly for ${prefs.get('username')}');
       Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => main_ui()));
       return true;
     }
-    Alert(context: context, title: "Oops", desc: "Invalid username/password").show();
-    return false;
+    else {
+      logger.i('Login response body is empty');
+      Alert(context: context, title: "Oops", desc: "Invalid username/password")
+          .show();
+      return false;
+    }
   }
 
-//  // Method to add employee to the database...
-//  static Future<String> addEmployee(String firstName, String lastName) async {
-//    try {
-//      var map = Map<String, dynamic>();
-//      map['action'] = _ADD_EMP_ACTION;
-//      map['first_name'] = firstName;
-//      map['last_name'] = lastName;
-//      final response = await http.post(ROOT, body: map);
-//      print('addEmployee Response: ${response.body}');
-//      if (200 == response.statusCode) {
-//        return response.body;
-//      } else {
-//        return "error";
-//      }
-//    } catch (e) {
-//      return "error";
-//    }
-//  }
-//
-//  // Method to update an Employee in Database...
-//  static Future<String> updateEmployee(
-//      String empId, String firstName, String lastName) async {
-//    try {
-//      var map = Map<String, dynamic>();
-//      map['action'] = _UPDATE_EMP_ACTION;
-//      map['emp_id'] = empId;
-//      map['first_name'] = firstName;
-//      map['last_name'] = lastName;
-//      final response = await http.post(ROOT, body: map);
-//      print('updateEmployee Response: ${response.body}');
-//      if (200 == response.statusCode) {
-//        return response.body;
-//      } else {
-//        return "error";
-//      }
-//    } catch (e) {
-//      return "error";
-//    }
-//  }
-//
-//  // Method to Delete an Employee from Database...
-//  static Future<String> deleteEmployee(String empId) async {
-//    try {
-//      var map = Map<String, dynamic>();
-//      map['action'] = _DELETE_EMP_ACTION;
-//      map['emp_id'] = empId;
-//      final response = await http.post(ROOT, body: map);
-//      print('deleteEmployee Response: ${response.body}');
-//      if (200 == response.statusCode) {
-//        return response.body;
-//      } else {
-//        return "error";
-//      }
-//    } catch (e) {
-//      return "error"; // returning just an "error" string to keep this simple...
-//    }
-//  }
 }

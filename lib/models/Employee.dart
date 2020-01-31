@@ -2,22 +2,16 @@ class Employee {
   String id;
   String firstName;
   String lastName;
+  String permissionIds;
+  Employee({this.id, this.firstName, this.lastName, this.permissionIds});
 
-  Employee({this.id,this.firstName,this.lastName});
-
-  factory Employee.fromJson(Map<String,dynamic>json){
-  Employee emp= Employee(
-    id: json['id'] as String,
-    firstName:json['first_name'] as String,
-    lastName:json['last_name'] as String,
-  );
-  //print ("emp to string ${emp.toString()}");
-
-
-  return emp;
-  }
-  String toString(){
-
-    return  (id  + firstName + lastName);
+  factory Employee.fromJson(Map<String, dynamic> json) {
+    Employee emp = Employee(
+      id: json['id'],
+      firstName: json['first_name'],
+      lastName: json['last_name'],
+      permissionIds: json['permissions_ids'],
+    );
+    return emp;
   }
 }

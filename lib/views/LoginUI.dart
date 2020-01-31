@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../widgets/FormCard.dart';
+import 'package:logger/logger.dart';
 import '../business/Services.dart';
+import '../business/WriteToFile.dart';
 
 class LoginUI extends StatefulWidget {
   @override
@@ -9,33 +10,15 @@ class LoginUI extends StatefulWidget {
 }
 
 class _LoginUIState extends State<LoginUI> {
-  bool _isSelected = false;
+  static List<String> lines=List();
+  OutputEvent oe=OutputEvent(Level.debug, lines);
+  static LogOutput lo = WriteToFile();
+  final Logger logger = Logger(output: lo);
+
 
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  void _radio() {
-    setState(() {
-      _isSelected = !_isSelected;
-    });
-  }
-
-  Widget radioButton(bool isSelected) => Container(
-    width: 16.0,
-    height: 16.0,
-    padding: EdgeInsets.all(2.0),
-    decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(width: 2.0, color: Colors.black)),
-    child: isSelected
-        ? Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration:
-      BoxDecoration(shape: BoxShape.circle, color: Colors.black),
-    )
-        : Container(),
-  );
 
   Widget horizontalLine() => Padding(
     padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -51,7 +34,9 @@ class _LoginUIState extends State<LoginUI> {
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
+    logger.i('building login UI');
     return new Scaffold(
+
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: true,
       body: Stack(
@@ -170,11 +155,7 @@ class _LoginUIState extends State<LoginUI> {
                           SizedBox(
                             width: 12.0,
                           ),
-                          GestureDetector(
-                            onTap: _radio,
-                            child: radioButton(_isSelected),
-                          ),
-                          SizedBox(
+                                                   SizedBox(
                             width: 8.0,
                           ),
                           Text("Remember me",

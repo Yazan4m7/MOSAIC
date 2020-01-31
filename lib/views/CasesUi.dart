@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app3/business/WriteToFile.dart';
 import '../models/Employee.dart';
 import '../business/Services.dart';
-import '../models/Task.dart';
+import '../models/Case.dart';
 import '../CustomDataTable.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -31,22 +33,12 @@ class main_ui extends StatefulWidget {
 class main_uiState extends State<main_ui> {
   List<Task> _employees;
 
-  // controller for the First Name TextField we are going to create.
-  TextEditingController _firstNameController;
-  // controller for the Last Name TextField we are going to create.
-  TextEditingController _lastNameController;
-  Employee _selectedEmployee;
-  bool _isUpdating;
-  String _titleProgress;
+
 
   @override
   void initState() {
     super.initState();
     _employees = [];
-    _isUpdating = false;
-    _titleProgress = widget.title;
-    _firstNameController = TextEditingController();
-    _lastNameController = TextEditingController();
     _getEmployees();
 
     var alertStyle = AlertStyle(
@@ -68,28 +60,19 @@ class main_uiState extends State<main_ui> {
     );
   }
 
-  // Method to update title in the AppBar Title
-  _showProgress(String message) {
-    setState(() {
-      _titleProgress = message;
-    });
-  }
 
   _getEmployees() async {
-    _showProgress('Loading Employees...');
-    await Services.getTasks().then((tasks) {
+
+    await Services.getCases().then((tasks) {
       setState(() {
         _employees = tasks;
       });
-      _showProgress(widget.title); // Reset the title...
+
       print("Length ${tasks.length}");
     });
   }
 
-  // Let's create a DataTable and show the employee list in it.
   SingleChildScrollView _dataBody() {
-    // Both Vertical and Horozontal Scrollview for the DataTable to
-    // scroll both Vertical and Horizontal...
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: SingleChildScrollView(
@@ -105,10 +88,6 @@ class main_uiState extends State<main_ui> {
             CustomDataColumn(
               label: Text('Phase'),
             ),
-            // Lets add one more column to show a delete button
-            CustomDataColumn(
-              label: Text('Assign to me'),
-            )
           ],
           rows: _employees
               .map(
@@ -124,8 +103,8 @@ class main_uiState extends State<main_ui> {
                           children: <Widget>[],
                         ),
                         buttons: [
-                          task.stage == "waiting"?
-                          DialogButton(
+                          task.stage == "waiting"
+                              ? DialogButton(
                                   onPressed: () {
                                     Services.updateToActive(task.id,
                                         task.current_status, task.stage);
@@ -138,7 +117,8 @@ class main_uiState extends State<main_ui> {
                                 )
                               : DialogButton(
                                   onPressed: () {
-                                    Services.updateToDone(task.id,task.current_status);
+                                    Services.updateToDone(
+                                        task.id, task.current_status);
                                   },
                                   child: Text(
                                     "Mark as done",
@@ -173,17 +153,9 @@ class main_uiState extends State<main_ui> {
                       // _showValues(task);
                       // Set the Selected employee to Update
                       // _selectedEmployee = task;
-                      setState(() {
-                        _isUpdating = true;
-                      });
+
                     },
                   ),
-                  CustomDataCell(IconButton(
-                    icon: Icon(Icons.slideshow),
-                    onPressed: () {
-                      //_deleteEmployee(employee);
-                    },
-                  ))
                 ]),
               )
               .toList(),
@@ -197,18 +169,17 @@ class main_uiState extends State<main_ui> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_titleProgress), // we show the progress in the title...
+        title: Text('MOSAIC'),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              // _createTable();
-            },
-          ),
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () {
               _getEmployees();
+            },
+          ),IconButton(
+            icon: Icon(Icons.folder_open),
+            onPressed: () {
+              WriteToFile.openLogs();
             },
           )
         ],
