@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_app3/widgets/CustomLoggerStyle.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -9,11 +10,12 @@ import '../views/CasesUi.dart';
 import 'WriteToFile.dart';
 
 class Services {
+
   static const ROOT = 'http://manshore.com/services_actions.php';
   static const _GET_ALL_ACTION = 'GET_ALL';
   static const _LOGIN = 'LOGIN';
-  static List<String> lines=List();
-  OutputEvent oe=OutputEvent(Level.debug, lines);
+  static List<String> lines = List();
+  OutputEvent oe = OutputEvent(Level.info, lines);
   static LogOutput lo = WriteToFile();
   static Logger logger = Logger(output: lo);
 
@@ -24,15 +26,13 @@ class Services {
       map['action'] = _GET_ALL_ACTION;
       map['query'] = "SELECT * from tasks WHERE current_status in $permissions ORDER BY id DESC";
       final response = await http.post(ROOT, body: map);
-      print('get all response body: ${response.body}');
-
+      logger.i('get all response body: ${response.body}');
         List<Task> list = parseResponse(response.body);
 
         return list;
   }
 
   static List<Task> parseResponse(String responseBody) {
-
     var parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
     parsed = parsed.map<Task>((json) => Task.fromJson(json)).toList();
     return parsed;
@@ -48,31 +48,30 @@ class Services {
       case 3: phaseBeingDone="finished";break;
       case 4: phaseBeingDone="approved";break;
       case 5: phaseBeingDone="delivered";break;
-
     }
 
     String query = "UPDATE tasks SET ${phaseBeingDone}_by = '${prefs.get('name')}' , stage='active' WHERE id = $caseID";
-    print("query is : $query");
+    logger.i("query is : $query");
 
 
     var map = Map<String, dynamic>();
     map['query'] = query;
     map ['action'] = "UPDATE_task_to_active";
     final response = await http.post(ROOT, body: map);
-    print('Assign task reponse body: ${response.body}');
+    logger.i('Assign task reponse body: ${response.body}');
 
   }
 
   static updateToDone(int caseID, String currentStatus) async{
 
     String query = "UPDATE tasks SET current_status ='${int.parse(currentStatus)+1}' , stage='waiting' WHERE id = $caseID";
-    print("query is : $query");
+    logger.i("query is : $query");
 
     var map = Map<String, dynamic>();
     map['query'] = query;
     map ['action'] = "UPDATE_task_to_done";
     final response = await http.post(ROOT, body: map);
-    print('Assign task to done reponse body: ${response.body}');
+    logger.i('Assign task to done reponse body: ${response.body}');
 
   }
 
@@ -90,10 +89,10 @@ class Services {
       prefs.setString("user_name",jsonDecode(response.body)[0]['username']);
       prefs.setString("name",jsonDecode(response.body)[0]['name']);
       prefs.setString("permissions_ids",jsonDecode(response.body)[0]['permissions_ids']);
-      logger.i('Prefs set successfuly for ${prefs.get('username')}');
+      logger.i('Prefs set successfuly for ${prefs.get('user_name')}');
       Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => main_ui()));
+          MaterialPageRoute(builder: (context) => CasesUi()));
       return true;
     }
     else {

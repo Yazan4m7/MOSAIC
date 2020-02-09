@@ -3,40 +3,47 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:logger/logger.dart';
 import '../business/Services.dart';
 import '../business/WriteToFile.dart';
+import 'CasesUi.dart';
 
 class LoginUI extends StatefulWidget {
   @override
-  _LoginUIState createState() => new _LoginUIState();
+  LoginUIState createState() => new LoginUIState();
 }
 
-class _LoginUIState extends State<LoginUI> {
-  static List<String> lines=List();
-  OutputEvent oe=OutputEvent(Level.debug, lines);
-  static LogOutput lo = WriteToFile();
-  final Logger logger = Logger(output: lo);
+class LoginUIState extends State<LoginUI> {
 
 
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
-
   Widget horizontalLine() => Padding(
-    padding: EdgeInsets.symmetric(horizontal: 16.0),
-    child: Container(
-      width: ScreenUtil.getInstance().setWidth(120),
-      height: 1.0,
-      color: Colors.black26.withOpacity(.2),
-    ),
-  );
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        child: Container(
+          width: ScreenUtil.getInstance().setWidth(120),
+          height: 1.0,
+          color: Colors.black26.withOpacity(.2),
+        ),
+      );
 
+  static BuildContext cont1;
   @override
-  Widget build(BuildContext context) {
+  Widget build(cont1) {
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
-    logger.i('building login UI');
     return new Scaffold(
+      appBar: AppBar(
+        title: const Text('MOSAIC LAB'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.folder_open),
+            onPressed: () {
 
+              WriteToFile.openLogs();
+            },
+          ),
+        ],
+      ),
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: true,
       body: Stack(
@@ -63,89 +70,93 @@ class _LoginUIState extends State<LoginUI> {
                   Column(
                     children: <Widget>[
                       Image.asset(
-                       "assets/logo.png",
-                       width: ScreenUtil.getInstance().setWidth(300),
+                        "assets/logo.png",
+                        width: ScreenUtil.getInstance().setWidth(300),
                         height: ScreenUtil.getInstance().setHeight(300),
                       ),
-
                     ],
                   ),
                   SizedBox(
                     height: ScreenUtil.getInstance().setHeight(100),
                   ),
-            Container(
-              width: double.infinity,
-              height: ScreenUtil.getInstance().setHeight(500),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8.0),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(0.0, 15.0),
-                        blurRadius: 15.0),
-                    BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(0.0, -10.0),
-                        blurRadius: 10.0),
-                  ]),
-              child: Padding(
-                padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text("Login",
-                        style: TextStyle(
-                            fontSize: ScreenUtil.getInstance().setSp(45),
-                            fontFamily: "Poppins-Bold",
-                            letterSpacing: .6)),
-                    SizedBox(
-                      height: ScreenUtil.getInstance().setHeight(30),
+                  Container(
+                    width: double.infinity,
+                    height: ScreenUtil.getInstance().setHeight(500),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8.0),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black12,
+                              offset: Offset(0.0, 15.0),
+                              blurRadius: 15.0),
+                          BoxShadow(
+                              color: Colors.black12,
+                              offset: Offset(0.0, -10.0),
+                              blurRadius: 10.0),
+                        ]),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text("Login",
+                              style: TextStyle(
+                                  fontSize: ScreenUtil.getInstance().setSp(45),
+                                  fontFamily: "Poppins-Bold",
+                                  letterSpacing: .6)),
+                          SizedBox(
+                            height: ScreenUtil.getInstance().setHeight(30),
+                          ),
+                          Text("Username",
+                              style: TextStyle(
+                                  fontFamily: "Poppins-Medium",
+                                  fontSize:
+                                      ScreenUtil.getInstance().setSp(26))),
+                          TextField(
+                            controller: _usernameController,
+                            decoration: InputDecoration(
+                                hintText: "username",
+                                hintStyle: TextStyle(
+                                    color: Colors.grey, fontSize: 12.0)),
+                          ),
+                          SizedBox(
+                            height: ScreenUtil.getInstance().setHeight(30),
+                          ),
+                          Text("Password",
+                              style: TextStyle(
+                                  fontFamily: "Poppins-Medium",
+                                  fontSize:
+                                      ScreenUtil.getInstance().setSp(26))),
+                          TextField(
+                            controller: _passwordController,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                                hintText: "Password",
+                                hintStyle: TextStyle(
+                                    color: Colors.grey, fontSize: 12.0)),
+                          ),
+                          SizedBox(
+                            height: ScreenUtil.getInstance().setHeight(20),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Text(
+                                "Forgot Password?",
+                                style: TextStyle(
+                                    color: Colors.blue,
+                                    fontFamily: "Poppins-Medium",
+                                    fontSize:
+                                        ScreenUtil.getInstance().setSp(28)),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
                     ),
-                    Text("Username",
-                        style: TextStyle(
-                            fontFamily: "Poppins-Medium",
-                            fontSize: ScreenUtil.getInstance().setSp(26))),
-                    TextField(
-                      controller: _usernameController,
-                      decoration: InputDecoration(
-                          hintText: "username",
-                          hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0)),
-                    ),
-                    SizedBox(
-                      height: ScreenUtil.getInstance().setHeight(30),
-                    ),
-                    Text("Password",
-
-                        style: TextStyle(
-                            fontFamily: "Poppins-Medium",
-                            fontSize: ScreenUtil.getInstance().setSp(26))),
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                          hintText: "Password",
-                          hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0)),
-                    ),
-                    SizedBox(
-                      height: ScreenUtil.getInstance().setHeight(20),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Text(
-                          "Forgot Password?",
-                          style: TextStyle(
-                              color: Colors.blue,
-                              fontFamily: "Poppins-Medium",
-                              fontSize: ScreenUtil.getInstance().setSp(28)),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
+                  ),
                   SizedBox(height: ScreenUtil.getInstance().setHeight(40)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -155,7 +166,7 @@ class _LoginUIState extends State<LoginUI> {
                           SizedBox(
                             width: 12.0,
                           ),
-                                                   SizedBox(
+                          SizedBox(
                             width: 8.0,
                           ),
                           Text("Remember me",
@@ -183,7 +194,10 @@ class _LoginUIState extends State<LoginUI> {
                             color: Colors.transparent,
                             child: InkWell(
                               onTap: () {
-                                 Services.logIn(_usernameController.text.trim(),_passwordController.text.trim(),context);},
+                                WriteToFile.write('Log in');
+                                Services.logIn(_usernameController.text.trim(),
+                                    _passwordController.text.trim(), context);
+                              },
                               child: Center(
                                 child: Text("SIGNIN",
                                     style: TextStyle(
@@ -191,11 +205,13 @@ class _LoginUIState extends State<LoginUI> {
                                         fontFamily: "Poppins-Bold",
                                         fontSize: 18,
                                         letterSpacing: 1.0)),
+
                               ),
                             ),
                           ),
                         ),
-                      )
+                      ),
+
                     ],
                   ),
                   SizedBox(
@@ -217,27 +233,24 @@ class _LoginUIState extends State<LoginUI> {
                   SizedBox(
                     height: ScreenUtil.getInstance().setHeight(30),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "New User? ",
-                        style: TextStyle(fontFamily: "Poppins-Medium"),
-                      ),
-                      InkWell(
-                        onTap: () {},
-                        child: Text("SignUp",
-                            style: TextStyle(
-                                color: Color(0xFF5d74e3),
-                                fontFamily: "Poppins-Bold")),
-                      )
-                    ],
-                  )
+
                 ],
               ),
             ),
           )
         ],
+      ),
+
+    );
+  }
+   static void showDefaultSnackbar(String msg) {
+    Scaffold.of(cont1).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        action: SnackBarAction(
+          label: 'Click Me',
+          onPressed: () {},
+        ),
       ),
     );
   }

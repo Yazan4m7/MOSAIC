@@ -3,7 +3,7 @@ import 'package:flutter_app3/business/WriteToFile.dart';
 import '../models/Employee.dart';
 import '../business/Services.dart';
 import '../models/Case.dart';
-import '../CustomDataTable.dart';
+import '../widgets/CustomDataTable.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 
@@ -15,25 +15,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      home: new main_ui(),
+      home: new CasesUi(),
     );
   }
 }
 
-class main_ui extends StatefulWidget {
+class CasesUi extends StatefulWidget {
   //
-  main_ui() : super();
+  CasesUi() : super();
 
   final String title = 'MOSAIC - Cases list';
 
   @override
-  main_uiState createState() => main_uiState();
+  CasesUiState createState() => CasesUiState();
 }
 
-class main_uiState extends State<main_ui> {
+class CasesUiState extends State<CasesUi> {
   List<Task> _employees;
-
-
 
   @override
   void initState() {
@@ -169,7 +167,7 @@ class main_uiState extends State<main_ui> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('MOSAIC'),
+        title: Text('CASES LIST'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.refresh),
