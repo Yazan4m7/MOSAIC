@@ -41,106 +41,121 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   @override
   Widget build(BuildContext context) {
-    void _showMultiSelect(BuildContext context) async {
-      final items = <MultiSelectDialogItem<int>>[
-        MultiSelectDialogItem(1, 'Dog'),
-        MultiSelectDialogItem(2, 'Cat'),
-        MultiSelectDialogItem(3, 'Mouse'),
-      ];}
+//    void _showMultiSelect(BuildContext context) async {
+//      final items = <MultiSelectDialogItem<int>>[
+//        MultiSelectDialogItem(1, 'Dog'),
+//        MultiSelectDialogItem(2, 'Cat'),
+//        MultiSelectDialogItem(3, 'Mouse'),
+//      ];}
 
 
       // Build a Form widget using the _formKey created above.
     return Form(
+
       key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          TextFormField(
-            decoration: InputDecoration(labelText: 'Case ID'),
-          ),TextFormField(
-            decoration: InputDecoration(labelText: 'Doctor name'),
-          ),TextFormField(
-            decoration: InputDecoration(labelText: 'Patient name'),
-          ),TextFormField(
-            decoration: InputDecoration(labelText: 'Enter your username'),
-          ),TextFormField(
-            decoration: InputDecoration(labelText: 'Enter your username'),
-          ),TextFormField(
-            decoration: InputDecoration(labelText: 'Enter your username'),
-          ),  MultiSelect(
-              autovalidate: false,
-              titleText: 'Units',
-              validator: (value) {
-                if (value == null) {
-                  return 'Please select one or more option(s)';
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+
+            TextFormField(
+              decoration: new InputDecoration(
+                labelText: "Doctor Name",
+                fillColor: Colors.white,
+                border: new OutlineInputBorder(
+                  borderRadius: new BorderRadius.circular(25.0),
+                  borderSide: new BorderSide(
+                  ),
+                ),
+                //fillColor: Colors.green
+              ),
+              validator: (val) {
+                if(val.length==0) {
+                  return "Doctor name cannot be empty";
+                }else{
+                  return null;
                 }
               },
-              errorText: 'Please select one or more option(s)',
-              dataSource: [
-                {
-                  "display": "1",
-                  "value": 1,
-                },
-                {
-                  "display": "2",
-                  "value": 2,
-                },
-                {
-                  "display": "3",
-                  "value": 3,
-                },
-                {
-                  "display": "4",
-                  "value": 4,
-                }
-              ],
-              textField: 'display',
-              valueField: 'value',
-              filterable: true,
-              required: true,
-              value: null,
-              onSaved: (value) {
-                print('The value is $value');
-              }
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: RaisedButton(
-              onPressed: () {
-                // Validate returns true if the form is valid, or false
-                // otherwise.
-                if (_formKey.currentState.validate()) {
-                  // If the form is valid, display a Snackbar.
-                  Scaffold.of(context)
-                      .showSnackBar(SnackBar(content: Text('Processing Data')));
-                }
-              },
-              child: Text('Submit'),
+              keyboardType: TextInputType.text,
+              style: new TextStyle(
+                fontFamily: "Poppins",
+              ),
             ),
-          ),
-        ],
+            SizedBox(height: 15,),
+            TextFormField(
+              decoration: new InputDecoration(
+                labelText: "Patient Name",
+                fillColor: Colors.white,
+                border: new OutlineInputBorder(
+                  borderRadius: new BorderRadius.circular(25.0),
+                  borderSide: new BorderSide(
+                  ),
+                ),
+                //fillColor: Colors.green
+              ),
+              keyboardType: TextInputType.text,
+              style: new TextStyle(
+                fontFamily: "Poppins",
+              ),
+            ),
+//          MultiSelect(
+//              autovalidate: false,
+//              titleText: 'Units',
+//              validator: (value) {
+//                if (value == null) {
+//                  return 'Please select one or more option(s)';
+//                }
+//              },
+//              errorText: 'Please select one or more option(s)',
+//              dataSource: [
+//                {
+//                  "display": "1",
+//                  "value": 1,
+//                },
+//                {
+//                  "display": "2",
+//                  "value": 2,
+//                },
+//                {
+//                  "display": "3",
+//                  "value": 3,
+//                },
+//                {
+//                  "display": "4",
+//                  "value": 4,
+//                }
+//              ],
+//              textField: 'display',
+//              valueField: 'value',
+//              filterable: true,
+//              required: true,
+//              value: null,
+//              onSaved: (value) {
+//                print('The value is $value');
+//              }
+//          ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: RaisedButton(
+                onPressed: () {
+
+
+                  if (_formKey.currentState.validate()) {
+                    // If the form is valid, display a Snackbar.
+                    Scaffold.of(context)
+                        .showSnackBar(SnackBar(content: Text('Sent')));
+                  }
+                },
+                child: Text('Submit'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
 
   }
-  void _showMultiSelect(BuildContext context) async {
-    final items = <MultiSelectDialogItem<int>>[
-      MultiSelectDialogItem(1, 'Dog'),
-      MultiSelectDialogItem(2, 'Cat'),
-      MultiSelectDialogItem(3, 'Mouse'),
-    ];
-
-    final selectedValues = await showDialog<Set<int>>(
-      context: context,
-      builder: (BuildContext context) {
-        return MultiSelectDialog(
-          items: items,
-          initialSelectedValues: [1, 3].toSet(),
-        );
-      },
-    );
-
-    print(selectedValues);
   }
 
-}
+

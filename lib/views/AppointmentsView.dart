@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app3/business/Logger.dart';
-import '../models/Employee.dart';
 import '../business/Services.dart';
 import '../models/Case.dart';
 import '../widgets/CustomDataTable.dart';
@@ -8,36 +7,36 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 
 void main() {
-  runApp(MyApp());
+  runApp(AppointmentsView());
 }
 
-class MyApp extends StatelessWidget {
+class AppointmentsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      home: new CasesUi(),
+      home: new AppointmentsUi(),
     );
   }
 }
 
-class CasesUi extends StatefulWidget {
+class AppointmentsUi extends StatefulWidget {
   //
-  CasesUi() : super();
+  AppointmentsUi() : super();
 
-  final String title = 'MOSAIC - Cases list';
+  final String title = 'MOSAIC - Scans list';
 
   @override
-  CasesUiState createState() => CasesUiState();
+  AppointmentsUiState createState() => AppointmentsUiState();
 }
 
-class CasesUiState extends State<CasesUi> {
-  List<Task> _employees;
+class AppointmentsUiState extends State<AppointmentsUi> {
+  List<Task> _Appointments;
 
   @override
   void initState() {
     super.initState();
-    _employees = [];
-    _getEmployees();
+    _Appointments = [];
+    _getAppointments();
 
     var alertStyle = AlertStyle(
       overlayColor: Colors.blue[400],
@@ -59,14 +58,12 @@ class CasesUiState extends State<CasesUi> {
   }
 
 
-  _getEmployees() async {
+  _getAppointments() async {
 
-    await Services.getCases().then((tasks) {
+    await Services.getCases().then((appointments) {
       setState(() {
-        _employees = tasks;
+        _Appointments = appointments;
       });
-
-      print("Length ${tasks.length}");
     });
   }
 
@@ -78,21 +75,21 @@ class CasesUiState extends State<CasesUi> {
         child: CustomDataTable(
           columns: [
             CustomDataColumn(
-              label: Text('Patient Name'),
+              label: Text('Doctor Name'),
             ),
             CustomDataColumn(
-              label: Text('Doctor name'),
+              label: Text('Time and Date'),
             ),
             CustomDataColumn(
-              label: Text('Phase'),
+              label: Text('Notes'),
             ),
           ],
-          rows: _employees
+          rows: _Appointments
               .map(
                 (task) => CustomDataRow(cells: [
-                  CustomDataCell(Text(task.patient_name),
-                      // Add tap in the row and populate the
-                      onTap: () {
+              CustomDataCell(Text(task.patient_name),
+                  // Add tap in the row and populate the
+                  onTap: () {
                     Alert(
                         context: context,
                         title: "patient : ${task.patient_name}",
@@ -102,27 +99,27 @@ class CasesUiState extends State<CasesUi> {
                         buttons: [
                           task.stage == "waiting"
                               ? DialogButton(
-                                  onPressed: () {
-                                    Services.updateToActive(task.id,
-                                        task.current_status, task.stage);
-                                  },
-                                  child: Text(
-                                    "Assign task",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 20),
-                                  ),
-                                )
+                            onPressed: () {
+                              Services.updateToActive(task.id,
+                                  task.current_status, task.stage);
+                            },
+                            child: Text(
+                              "Assign task",
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 20),
+                            ),
+                          )
                               : DialogButton(
-                                  onPressed: () {
-                                    Services.updateToDone(
-                                        task.id, task.current_status);
-                                  },
-                                  child: Text(
-                                    "Mark as done",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 15),
-                                  ),
-                                ),
+                            onPressed: () {
+                              Services.updateToDone(
+                                  task.id, task.current_status);
+                            },
+                            child: Text(
+                              "Mark as done",
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 15),
+                            ),
+                          ),
                           DialogButton(
                             onPressed: () {
                               print("view task");
@@ -130,31 +127,31 @@ class CasesUiState extends State<CasesUi> {
                             child: Text(
                               "View task",
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 20),
+                              TextStyle(color: Colors.white, fontSize: 20),
                             ),
                           )
                         ]).show();
                   }),
-                  CustomDataCell(Row(
-                    children: <Widget>[
-                      Text(
-                        task.doctor_id.toString(),
-                      ),
-                    ],
-                  )),
-                  CustomDataCell(
-                    Text(
-                      task.stage,
-                    ),
-                    onTap: () {
-                      // _showValues(task);
-                      // Set the Selected employee to Update
-                      // _selectedEmployee = task;
-
-                    },
+              CustomDataCell(Row(
+                children: <Widget>[
+                  Text(
+                    task.doctor_id.toString(),
                   ),
-                ]),
-              )
+                ],
+              )),
+              CustomDataCell(
+                Text(
+                  task.stage,
+                ),
+                onTap: () {
+                  // _showValues(task);
+                  // Set the Selected employee to Update
+                  // _selectedEmployee = task;
+
+                },
+              ),
+            ]),
+          )
               .toList(),
         ),
       ),
@@ -171,7 +168,7 @@ class CasesUiState extends State<CasesUi> {
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () {
-              _getEmployees();
+              _getAppointments();
             },
           ),IconButton(
             icon: Icon(Icons.folder_open),
